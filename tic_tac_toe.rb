@@ -1,7 +1,7 @@
-# frozen_string_literal: false
+# frozen_string_literal: true
 
 # Comment needed for rubocop
-class Game
+class GameBoard
   attr_accessor :board
 
   def initialize
@@ -11,9 +11,9 @@ class Game
     #   bottom_left: 7, bottom_middle: 8, bottom_right: 9
     # }
     @board = {
-      tl: 1, tm: 2, tr: 3,
-      ml: 4, mm: 5, mr: 6,
-      bl: 7, bm: 8, br: 9
+      tl: '1', tm: '2', tr: '3',
+      ml: '4', mm: '5', mr: '6',
+      bl: '7', bm: '8', br: '9'
     }
     # @board = {
     #   top: [1, 2, 3],
@@ -22,7 +22,7 @@ class Game
     # }
   end
 
-  def display_board
+  def display
     # Did this way because 'Assignment Branch Condition size is too high'
     puts first_line
     puts divider_line
@@ -38,7 +38,7 @@ class Game
   private
 
   def first_line
-    " #{board[:tl]} | #{board[:tm]} | #{board[:tr]}"
+    "\n #{board[:tl]} | #{board[:tm]} | #{board[:tr]}"
   end
 
   def second_line
@@ -46,7 +46,7 @@ class Game
   end
 
   def third_line
-    " #{board[:bl]} | #{board[:bm]} | #{board[:bl]}"
+    " #{board[:bl]} | #{board[:bm]} | #{board[:br]}"
   end
 
   def divider_line
@@ -54,29 +54,50 @@ class Game
   end
 end
 
-# Rubocop comment
+# Not enough known about inheritance yet
 class PlayPiece
-  def initialize
-    @piece = ' '
-  end
+  # attr_reader :piece
+  # PIECE = ' '
+  # def initialize
+  #   @piece = ' '
+  # end
 end
 
-# Rubocop comment
-class CrossPiece < PlayPiece
-  def super
+# Probably don't need a whole class for one character
+class Cross
+  attr_reader :piece
+
+  def initialize
     @piece = 'X'
   end
 end
 
-# Rubocop comment
-class CirclePiece < PlayPiece
-  def super
+# Probably don't need a whole class for one character
+class Circle
+  attr_reader :piece
+
+  def initialize
     @piece = 'O'
   end
 end
 
-game = Game.new
-game.display_board
-# first player puts piece
-# game.display_board
-# second player puts piece
+# Main game loop
+class Play
+  def initialize
+    @game = GameBoard.new
+    @positions = @game.board.keys
+  end
+
+  def game
+    # p @positions
+    @game.display
+    i = gets.chomp.to_i
+    @game.put_piece(@positions[i - 1], Cross.new.piece)
+    @game.display
+    # add 'position filled' method, to gameboard probably.
+  end
+end
+
+Play.new.game
+# game = Game.new
+# game.play
