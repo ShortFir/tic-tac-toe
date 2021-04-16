@@ -2,7 +2,7 @@
 
 # Comment needed for rubocop
 class GameBoard
-  attr_accessor :board
+  attr_reader :board
 
   def initialize
     # @board = {
@@ -24,11 +24,11 @@ class GameBoard
 
   def display
     # Did this way because 'Assignment Branch Condition size is too high'
-    puts first_line
-    puts divider_line
-    puts second_line
-    puts divider_line
-    puts third_line
+    print first_line
+    print divider_line
+    print second_line
+    print divider_line
+    print third_line
   end
 
   def put_piece(position, piece)
@@ -42,15 +42,15 @@ class GameBoard
   end
 
   def second_line
-    " #{board[:ml]} | #{board[:mm]} | #{board[:mr]}"
+    "\n #{board[:ml]} | #{board[:mm]} | #{board[:mr]}"
   end
 
   def third_line
-    " #{board[:bl]} | #{board[:bm]} | #{board[:br]}"
+    "\n #{board[:bl]} | #{board[:bm]} | #{board[:br]}"
   end
 
   def divider_line
-    '-----------'
+    "\n-----------"
   end
 end
 
@@ -86,18 +86,30 @@ class Play
   def initialize
     @game = GameBoard.new
     @positions = @game.board.keys
+    # @player = 'X'
   end
 
   def game
-    # p @positions
-    @game.display
-    i = gets.chomp.to_i
-    @game.put_piece(@positions[i - 1], Cross.new.piece)
-    @game.display
+    player = 'X'
+    while TRUE
+      @game.display
+      pos = get_player_input(player)
+      @game.put_piece(@positions[pos - 1], player)
+      player = switch_player(player)
+    end
     # add 'position filled' method, to gameboard probably.
+  end
+
+  private
+
+  def switch_player(xoro)
+    xoro == 'X' ? 'O' : 'X'
+  end
+
+  def get_player_input(xoro)
+    print "\n\nPlayer #{xoro}, enter position: "
+    gets.chomp.to_i
   end
 end
 
 Play.new.game
-# game = Game.new
-# game.play
