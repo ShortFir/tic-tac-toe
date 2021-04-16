@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Comment needed for rubocop
+# Object represents the actual game board, as named.
 class GameBoard
   attr_reader :board
 
@@ -11,6 +11,7 @@ class GameBoard
       ml: 4, mm: 5, mr: 6,
       bl: 7, bm: 8, br: 9
     }
+    # Maybe an array would make more sense?
   end
 
   def display
@@ -22,7 +23,7 @@ class GameBoard
     print third_line
   end
 
-  def put_piece(position, piece)
+  def put_piece?(position, piece)
     if @board[position].is_a?(Integer)
       @board[position] = piece
       TRUE
@@ -32,10 +33,36 @@ class GameBoard
     end
   end
 
+  def winner?(player)
+    if three_in_a_row?
+      print "\n\n#{player} Wins!!!"
+      print "\n\nPress Enter."
+      gets
+      TRUE
+    else
+      FALSE
+    end
+  end
+
   private
 
+  def three_in_a_row?
+    if  [@board[:tl], @board[:tm], @board[:tr]].all?(@board[:tl]) ||
+        [@board[:ml], @board[:mm], @board[:mr]].all?(@board[:ml]) ||
+        [@board[:bl], @board[:bm], @board[:br]].all?(@board[:bl]) ||
+        [@board[:tl], @board[:ml], @board[:bl]].all?(@board[:tl]) ||
+        [@board[:tm], @board[:mm], @board[:bm]].all?(@board[:tm]) ||
+        [@board[:tr], @board[:mr], @board[:br]].all?(@board[:tr]) ||
+        [@board[:tl], @board[:mm], @board[:br]].all?(@board[:tl]) ||
+        [@board[:bl], @board[:mm], @board[:tr]].all?(@board[:bl])
+      TRUE
+    else
+      FALSE
+    end
+  end
+
   def first_line
-    "\n #{board[:tl]} | #{board[:tm]} | #{board[:tr]}"
+    "\n #{@board[:tl]} | #{board[:tm]} | #{board[:tr]}"
   end
 
   def second_line
@@ -51,23 +78,27 @@ class GameBoard
   end
 end
 
-# Main game loop
+# Main game loop. Object represents the overall game, i.e the 2 players.
+# Or may be a collection of methods...so a module. Learn later I guess.
 class Play
   def initialize
     @game = GameBoard.new
     @positions = @game.board.keys
+    @player = 'X'
   end
 
   def game
-    player = 'X'
-    while TRUE
-      @game.display
+    @game.display
+    loop do
       loop do
         # Player input here pauses the loop.
-        pos = get_player_input(player)
-        break if @game.put_piece(@positions[pos - 1], player)
+        index = get_player_input(@player)
+        break if @game.put_piece?(@positions[index - 1], @player)
       end
-      player = switch_player(player)
+      @game.display
+      break if @game.winner?(@player)
+
+      @player = switch_player(@player)
     end
   end
 
