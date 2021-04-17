@@ -27,10 +27,10 @@ class GameBoard
   def put_piece?(position, piece)
     if @board[position].is_a?(Integer)
       @board[position] = piece
-      TRUE
+      true
     else
       print "\nPosition already taken."
-      FALSE
+      false
     end
   end
 
@@ -42,7 +42,7 @@ class GameBoard
       print "\n\nIt's a draw! Everybody loses..."
       game_over
     else
-      FALSE
+      false
     end
   end
 
@@ -58,20 +58,20 @@ class GameBoard
         [@board[:tr], @board[:mr], @board[:br]].all?(@board[:tr]) ||
         [@board[:tl], @board[:mm], @board[:br]].all?(@board[:tl]) ||
         [@board[:bl], @board[:mm], @board[:tr]].all?(@board[:bl])
-      TRUE
+      true
     else
-      FALSE
+      false
     end
   end
 
   def board_full?
-    @board.values.all?(String) ? TRUE : FALSE
+    @board.values.all?(String) ? true : false
   end
 
   def game_over
     print "\n\nPress Enter."
     gets
-    TRUE
+    true
   end
 
   def first_line
