@@ -12,6 +12,7 @@ class GameBoard
       bl: 7, bm: 8, br: 9
     }
     # Maybe an array would make more sense?
+    # Also an array of winning combinations? instead of that big if statement.
   end
 
   def display
@@ -36,9 +37,10 @@ class GameBoard
   def winner?(player)
     if three_in_a_row?
       print "\n\n#{player} Wins!!!"
-      print "\n\nPress Enter."
-      gets
-      TRUE
+      game_over
+    elsif board_full?
+      print "\n\nIt's a draw! Everybody loses..."
+      game_over
     else
       FALSE
     end
@@ -46,6 +48,7 @@ class GameBoard
 
   private
 
+  # This could be redone, but it works now, so...
   def three_in_a_row?
     if  [@board[:tl], @board[:tm], @board[:tr]].all?(@board[:tl]) ||
         [@board[:ml], @board[:mm], @board[:mr]].all?(@board[:ml]) ||
@@ -59,6 +62,16 @@ class GameBoard
     else
       FALSE
     end
+  end
+
+  def board_full?
+    @board.values.all?(String) ? TRUE : FALSE
+  end
+
+  def game_over
+    print "\n\nPress Enter."
+    gets
+    TRUE
   end
 
   def first_line
@@ -109,8 +122,13 @@ class Play
   end
 
   def get_player_input(xoro)
-    print "\n\nPlayer #{xoro}, enter position: "
-    gets.chomp.to_i
+    loop do
+      print "\n\nPlayer #{xoro}, enter position (1-9): "
+      input = gets.chomp.to_i
+      return input if input.between?(1, 9)
+
+      print "\nError! Number must be from 1 to 9."
+    end
   end
 end
 
